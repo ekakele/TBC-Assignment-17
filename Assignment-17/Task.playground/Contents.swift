@@ -15,6 +15,7 @@ private func generateRandomInt(min: Int, max: Int) -> Int {
     return randomInt
 }
 
+//Big Int factorial calculation copied from StackOverflow
 private func multiplyAndHandleCarryovers(_ digits: [Int], by multiplier: Int) -> [Int] {
     var result = [Int]()
     
@@ -45,35 +46,28 @@ private func calculateFactorial(number: Int) -> String {
     return result
 }
 
-private func asynchronousFactorialCalculatorOne(completion: @escaping () -> Void) {
+private func asynchronousFactorialCalculator(threadNumber: Int, completion: @escaping () -> Void) {
     DispatchQueue.global().async {
         let randomNumber = generateRandomInt(min: 20, max: 50)
         let result = calculateFactorial(number: randomNumber)
         if winnerIsDetected == false {
-            printResultText(winner: true, threadNumber: 1, number: randomNumber, factorial: result)
+            printResultText(winner: true, threadNumber: threadNumber, number: randomNumber, factorial: result)
             
             winnerIsDetected = true
         } else {
-            printResultText(winner: false, threadNumber: 1, number: randomNumber, factorial: result)
+            printResultText(winner: false, threadNumber: threadNumber, number: randomNumber, factorial: result)
         }
         
         completion()
     }
 }
 
+private func asynchronousFactorialCalculatorOne(completion: @escaping () -> Void) {
+    asynchronousFactorialCalculator(threadNumber: 1, completion: completion)
+}
+
 private func asynchronousFactorialCalculatorTwo(completion: @escaping () -> Void) {
-    DispatchQueue.global().async {
-        let randomNumber = generateRandomInt(min: 20, max: 50)
-        let result = calculateFactorial(number: randomNumber)
-        if winnerIsDetected == false {
-            printResultText(winner: true, threadNumber: 2, number: randomNumber, factorial: result)
-            
-            winnerIsDetected = true
-        } else {
-            printResultText(winner: false, threadNumber: 2, number: randomNumber, factorial: result)
-        }
-        completion()
-    }
+    asynchronousFactorialCalculator(threadNumber: 2, completion: completion)
 }
 
 private func printResultText(winner: Bool, threadNumber: Int, number: Int, factorial: String) -> Void {
